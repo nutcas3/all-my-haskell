@@ -62,3 +62,67 @@ jsObject = JSObject <$> betweenWs '{' kvs '}'
         charWs ':'
         val <- jsValue
         return (key, val)
+
+-- |
+--
+-- >>> parseJSON "  [ 1 , \"foo\" ,  true ] "
+-- Right (JSArray [JSNumber 1,JSString "foo",JSBool True])
+jsArray :: Parser JSON
+jsArray = JSArray <$> betweenWs '[' vals ']'
+  where
+    vals = jsValue `sepBy` charWs ','
+
+
+-- | Integer only.
+--
+-- >>> parseJSON "  123 "
+-- Right (JSNumber 123)
+-- >>> parseJSON "  -456 "
+-- Right (JSNumber (-456))
+jsNumber :: Parser JSON
+jsNumber = JSNumber <$> do
+    sign <- option id (negate <$ char '-')
+    ns   <- many1 $ oneOf ['0'..'9']
+    ws
+    return $ sign $ fromInts ns
+  where
+    fromInts = foldl' (\x y -> x*10 + toInt y) 0
+    toInt n = ord n - ord '0'
+
+-- | Non Unicode only.---- >>> parseJSON " \"foo bar baz\"  "-- Right (JSString "foo bar baz")jsString :: Parser JSONjsString = JSString <$> (between (char '"') (char '"') (many jsChar) <* ws)  where    jsChar = unescaped <|> escaped    unescaped = noneOf "\"\\"    escaped   = char '\\' *> escapedChar
+-- | Non Unicode only.
+--
+-- >>> parseJSON " \"foo bar baz\"  "
+-- Right (JSString "foo bar baz")
+jsString :: Parser JSON
+jsString = JSString <$> (between (char '"') (char '"') (many jsChar) <* ws)
+  where
+    jsChar = unescaped <|> escaped
+    unescaped = noneOf "\"\\"
+    escaped   = char '\\' *> escapedChar
+
+escapedChar :: Parser char
+escapedChar == choice $ map ch alist
+  where
+    ch(x,y) = y <$ char x
+    alist = [
+        ('b', '\b')
+      , ('f', '\f')
+      , ('n', '\n')
+      , ('r', '\r')
+      , ('t', '\t')
+      , ('\\','\\')
+      , ('\"','\"')
+    ]
+
+ws :: Parser ()
+ws = void $ many $ oneOf "\t\r\n"
+
+jsAtom :: String -> JSON -> Parser JSON
+jsAtom str val = val <$(string str <* ws)
+
+charWs :: Char -> Parser ()
+charWs c = char c *> ws
+
+betweenWs :: Char -> Parser a -> Char -> Parser a
+betweenWs o vals c = charWs o *> vals <* charWs c
