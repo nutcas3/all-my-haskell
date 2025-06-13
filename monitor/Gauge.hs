@@ -1,9 +1,8 @@
 {-# OPTIONS_HADDOCK not-home #-}
 
 
-
-
-module Monitor.Gauge
+-- | This module provides a remote gauge interface for the Monitor system.
+module Gauge
     ( Gauge.Gauge
     , Gauge.inc
     , Gauge.dec
@@ -13,3 +12,5 @@ module Monitor.Gauge
     ) where
 
 import qualified Monitor.Metrics.Gauge as Gauge
+-- TODO: Replace with the correct import for Gauge, e.g.:
+-- import qualified Some.Existing.Gauge.Module as Gauge
