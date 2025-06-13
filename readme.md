@@ -1,4 +1,4 @@
-That's a great question! Haskell's strong typing, purity, and powerful abstractions make it well-suited for a variety of interesting projects. Here are some ideas, categorized by difficulty and area, to get you started:
+Here are some ideas, categorized by difficulty and area, to get you started:
 
 **Beginner-Friendly Projects:**
 
