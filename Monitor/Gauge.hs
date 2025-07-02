@@ -11,6 +11,6 @@ module Gauge
     , Gauge.set
     ) where
 
-import qualified Monitor.Metrics.Gauge as Gauge
+import qualified Monitor.Gauge as Gauge
 -- TODO: Replace with the correct import for Gauge, e.g.:
 -- import qualified Some.Existing.Gauge.Module as Gauge

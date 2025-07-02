@@ -7,8 +7,8 @@ module System.Remote.Json
 import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as L
 
-import System.Metrics
-import qualified System.Metrics.Json as Json
+import Monitor
+import qualified Monitor.Json as Json
 
 -- | Encode metrics as nested JSON objects. See 'Json.sampleToJson'
 -- for a description of the encoding.
